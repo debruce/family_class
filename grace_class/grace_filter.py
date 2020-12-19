@@ -15,9 +15,6 @@ import datetime
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-import matplotlib
-import matplotlib.pyplot as plt
-import numpy as np
 
 ref_date = datetime.date(2021,9,1)
 
@@ -93,12 +90,13 @@ def main():
             return True
 
     test_list = [
-        MyTest('one', 0, 9),
-        MyTest('two', 9, 13),
-        MyTest('three',13,24),
-        MyTest('four',24,36),
-        MyTest('five',36,48),
-        MyTest('six',48,600),
+        MyTest('infant one', 0, 9),
+        MyTest('infant two', 9, 13),
+        MyTest('toddler',13,24),
+        MyTest('younger preschool',24,36),
+        MyTest('preschool',36,48),
+        MyTest('pre-K',48,60),
+        MyTest('graduate',60,60000),
     ]
 
     while True:
@@ -132,24 +130,26 @@ def main():
 
         print('\n')
         for k in names_by_label.keys():
-            print(k)
+            names_by_label[k].sort(key = lambda x: x.dob, reverse=True)
+            print(f"{k} total_students={len(names_by_label[k])}")
+            for child in names_by_label[k]:
+                print(f"\"{k}\", \"{child.name:30s}\", \"{child.sheet:20s}\", {child.dob}, {(ref_date-child.dob).days}")
+
+        output_props = {'properties': {'title': 'fitered output'}}
+        result = service.spreadsheets().create(body=output_props).execute()
+        outputSheetId = result['spreadsheetId']
+        print('Created "%s" as %s' % (result['properties']['title'], outputSheetId))
+        print(result['spreadsheetUrl'])
+
+        outputValues = []
+        for k in names_by_label.keys():
             names_by_label[k].sort(key = lambda x: x.dob, reverse=True)
             for child in names_by_label[k]:
-                print(f"\t{child.name:30s} {child.sheet:20s} {child.dob}      {(ref_date-child.dob).days}")
+                outputValues.append([k, child.name, child.sheet, child.dob.isoformat(), (ref_date-child.dob).days])
 
-        # Data for plotting
-        t = np.arange(0.0, 2.0, 0.01)
-        s = 1 + np.sin(2 * np.pi * t)
-
-        fig, ax = plt.subplots()
-        ax.plot(t, s)
-
-        ax.set(xlabel='time (s)', ylabel='voltage (mV)',
-            title='About as simple as it gets, folks')
-        ax.grid()
-
-        fig.savefig("test.png")
-        plt.show()
+        outputData = {'values': outputValues}
+        service.spreadsheets().values().update(spreadsheetId=outputSheetId, range='A1', body=outputData, valueInputOption='RAW').execute()
+        
 
 if __name__ == '__main__':
     main()
