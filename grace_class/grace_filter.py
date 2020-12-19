@@ -15,6 +15,9 @@ import datetime
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
 
 ref_date = datetime.date(2021,9,1)
 
@@ -133,6 +136,20 @@ def main():
             names_by_label[k].sort(key = lambda x: x.dob, reverse=True)
             for child in names_by_label[k]:
                 print(f"\t{child.name:30s} {child.sheet:20s} {child.dob}      {(ref_date-child.dob).days}")
+
+        # Data for plotting
+        t = np.arange(0.0, 2.0, 0.01)
+        s = 1 + np.sin(2 * np.pi * t)
+
+        fig, ax = plt.subplots()
+        ax.plot(t, s)
+
+        ax.set(xlabel='time (s)', ylabel='voltage (mV)',
+            title='About as simple as it gets, folks')
+        ax.grid()
+
+        fig.savefig("test.png")
+        plt.show()
 
 if __name__ == '__main__':
     main()
