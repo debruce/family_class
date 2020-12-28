@@ -23,33 +23,6 @@ def main():
     gapi = GAPI().getInstance()
     drive_service = gapi.get_drive()
 
-    files = (
-        ('hello.txt', None),
-        ('hello.txt', 'application/vnd.google-apps.document'),
-    )
-
-    for filename, mimeType in files:
-        metadata = {'name': filename}
-        if mimeType:
-            metadata['mimeType'] = mimeType
-        res = drive_service.files().create(body=metadata, media_body=filename).execute()
-        if res:
-            print(f"Uploaded {filename} ({res['mimeType']})")
-
-    if res:
-        MIMETYPE = 'application/pdf'
-        data = drive_service.files().export(fileId=res['id'], mimeType=MIMETYPE).execute()
-        if data:
-            fn = f"{os.path.splitext(filename)[0]}.pdf"
-            with open(fn, "wb") as fh:
-                fh.write(data)
-            print(f"Downloaded {fn} ({MIMETYPE})")
-
-    files = drive_service.files().list().execute().get('items', [])
-    for f in files:
-        print(f"title={f['title']} type={f['mimeType']}")
-    print('after files loop')
-
     sheets_service = gapi.get_sheets()
 
     while True:
