@@ -7,7 +7,11 @@ from google.auth.transport.requests import Request
 from appdirs import AppDirs
 from pathlib import Path
 
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
+   'https://www.googleapis.com/auth/drive',
+   'https://www.googleapis.com/auth/calendar',
+   'https://www.googleapis.com/auth/gmail.send'
+]
 
 class GAPI:
    __instance = None
@@ -50,3 +54,9 @@ class GAPI:
 
    def get_sheets(self):
       return build('sheets', 'v4', credentials=self.creds)
+
+   def get_cal(self):
+      return build('calendar', 'v3', credentials=self.creds)
+
+   def get_mail(self):
+      return build('gmail', 'v1', credentials=self.creds)
