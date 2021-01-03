@@ -1,17 +1,8 @@
 #!/usr/local/bin/python3
 
 from __future__ import print_function
-import pickle
 import os.path
-import pprint
 import sys
-import re
-from urllib.parse import unquote, urlparse
-from pathlib import PurePosixPath
-from collections import namedtuple
-from collections import defaultdict
-from pprint import pformat
-import numpy as np
 import datetime
 from gapi import GAPI
 
@@ -53,23 +44,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-    # print(np.reshape(grid == 0, (81,1)))
-
-    # print("Row sums")
-    # print(45 - np.sum(grid, axis=1))
-
-    # print("Col sums")
-    # print(45 - np.sum(grid, axis=0))
-
-    # print("Block sums")
-    # for r in range(3):
-    #     for c in range(3):
-    #         print(45 - np.sum(grid[r*3:r*3+3,c*3:c*3+3]))
-
-    # body = {
-    #     'majorDimension': 'ROWS',
-    #     'range': 'Sheet1!A1:I9',
-    #     'values': grid.tolist()
-    # }
-    # result = service.spreadsheets().values().update(spreadsheetId=workbook_id, range="Sheet1!A1:I9", valueInputOption='RAW', body=body).execute()
