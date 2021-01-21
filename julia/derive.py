@@ -1,6 +1,6 @@
 class Base:
     def __init__(self):
-        print("hello from Base::__init__")
+        print("hello from Base::__init__" )
 
     def __del__(self):
         print("hello from Base::__del__")
