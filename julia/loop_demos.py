@@ -1,6 +1,9 @@
 
 for i in range(4):
     print("statement1", i)
+    for j in range(3):
+        s=f"    i={i} j={j}"
+        print(s)
     print("statement2", i)
 print("statement after for loop")
 
