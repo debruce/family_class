@@ -101,3 +101,6 @@ def main():
 
 
 main()
+
+# go watch this guy's videos
+# https://pythonprogramming.net/coloring-pyopengl-surfaces-python-opengl/?completed=/opengl-rotating-cube-example-pyopengl-tutorial/
