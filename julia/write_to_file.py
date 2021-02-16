@@ -2,6 +2,7 @@ from termcolor import colored
 import pickle
 import yaml
 import json
+import cbor2 as cbor
 from pprint import pprint
 
 # with open('file_to_create.txt', "a") as my_file:
@@ -17,19 +18,21 @@ from pprint import pprint
 #         print()
 #         print()
 
-with open('file_to_create.json', "w") as my_file:
+with open('file_to_create.cbor', "wb") as my_file:
     d = {
         'list': [
-            { "p1": 1, "p2": 2},
+            { "p1": 1, "p2": "2"},
             { "x1": 1, "x2": 2}
-        ]
+        ],
+        'second key': b'\x01\x02\x03abcdef',
+        "third key is a float": 3.1416
     }
-    json.dump(d, my_file)
+    cbor.dump(d, my_file)
 
 print('after write')
 
-with open('file_to_create.json', "r") as rd_file:
-    data = json.load(rd_file)
+with open('file_to_create.cbor', "rb") as rd_file:
+    data = cbor.load(rd_file)
     pprint(data)
 
 # for cnt,it in enumerate(range(2,20,2)):
