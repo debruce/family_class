@@ -51,3 +51,4 @@ fig, (ax1, ax2) = plt.subplots(1, 2)
 my_plotter(ax1, data1, data2, {'marker': 'x'})
 my_plotter(ax2, data3, data4, {'marker': 'o'})
 
+plt.show()
