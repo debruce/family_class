@@ -12,7 +12,7 @@ def main():
     Prints values from a sample spreadsheet.
     """
     gapi = GAPI().getInstance()
-    #drive_service = gapi.get_drive()
+    drive_service = gapi.get_drive()
     sheets_service = gapi.get_sheets()
 
     body = {
@@ -52,6 +52,13 @@ def main():
         ]
     }
     result = sheets_service.spreadsheets().values().batchUpdate(spreadsheetId=workbook_id, body=body).execute()
+
+    body = {
+        "role": "reader",
+        "type": "emailAddress",
+        "emailAddress": "david.e.bruce@gmail.com"
+    }
+    drive_service.permissions().create(fileId=workbook_id, body=body).execute()
 
 if __name__ == '__main__':
     main()
