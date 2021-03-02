@@ -15,10 +15,61 @@ class GSheet:
    _sheet_id = None
 
 
-   def __init__(self, sheet_id):
+   @staticmethod 
+   def show():
+      gauth = GAuth().getInstance()
+      drive_service = gauth.get_drive()
+      pageToken = None
+      while True:
+         lst = drive_service.files().list(pageSize=1000, pageToken=pageToken).execute()
+         for f in lst['files']:
+               if f['mimeType'] != 'application/vnd.google-apps.spreadsheet':
+                  continue
+               pprint(f)
+               print()
+               # if f['name'] == openTitle:
+               #    self._sheet_id = f['id']
+               #    return
+         if 'nextPageToken' not in lst:
+               break
+         pageToken = lst['nextPageToken']
+
+   def __init__(self, openId=None, createInfo=None, openTitle=None):
+      gauth = GAuth().getInstance()
+      drive_service = gauth.get_drive()
       if GSheet._api == None:
-         GSheet._api = GAuth().getInstance().get_sheets()
-      self._sheet_id = sheet_id
+         GSheet._api = gauth.get_sheets()
+      if openId:
+         self._sheet_id = sheet_id
+      elif createInfo:
+         body = {
+            'properties': {
+               'title': createInfo['title']
+            }
+         }
+         results = GSheet._api.spreadsheets().create(body=body).execute()
+         self._sheet_id = results['spreadsheetId']
+         if 'users' in createInfo:
+            for user in createInfo['users']:
+               body = {
+                  'role': user['role'],
+                  'type': 'user',
+                  'emailAddress': user['emailAddress']
+               }
+               drive_service.permissions().create(fileId=self._sheet_id, body=body).execute()
+      elif openTitle:
+         pageToken = None
+         while True:
+            lst = drive_service.files().list(pageSize=1000, pageToken=pageToken).execute()
+            for f in lst['files']:
+                  if f['mimeType'] != 'application/vnd.google-apps.spreadsheet':
+                     continue
+                  if f['name'] == openTitle:
+                     self._sheet_id = f['id']
+                     return
+            if 'nextPageToken' not in lst:
+                  break
+            pageToken = lst['nextPageToken']
 
 
    def make_sheet(self, title, data):
@@ -72,7 +123,10 @@ class GSheet:
    def get_sheet(self, title):
       response = GSheet._api.spreadsheets().values().get(spreadsheetId=self._sheet_id,
          range=title).execute()
-      return np.asarray(response['values'])
+      if 'values' in response:
+         return np.asarray(response['values'])
+      else:
+         return None
 
    def get_titles(self):
       response = GSheet._api.spreadsheets().get(spreadsheetId=self._sheet_id).execute()

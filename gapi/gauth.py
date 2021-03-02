@@ -26,9 +26,7 @@ class GAuth:
 
    def __init__(self):
       """ Virtually private constructor. """
-      if GAuth.__instance != None:
-         raise Exception("This class is a singleton!")
-      else:
+      if GAuth.__instance == None:
          file = Path().home() / "compact-gadget-230820-186a0c1fc8d3.json"
          self.creds = service_account.Credentials.from_service_account_file(file, scopes=SCOPES)
          GAuth.__instance = self
