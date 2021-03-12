@@ -4,14 +4,14 @@ from __future__ import print_function
 import os.path
 import sys
 from pprint import pprint
-from gapi import GAPI
+from gapi.gauth import GAuth
 
 
 def main():
     """Shows basic usage of the Sheets API.
     Prints values from a sample spreadsheet.
     """
-    gapi = GAPI().getInstance()
+    gapi = GAuth().getInstance()
     drive_service = gapi.get_drive()
 
     pageToken = None
@@ -27,6 +27,10 @@ def main():
                 print("try to dump it")
                 mydata = drive_service.files().get_media(fileId=f['id']).execute()
                 pprint(mydata)
+            try:
+                drive_service.files().delete(fileId=f['id']).execute()
+            except:
+                print('delete failed')
             print('\n\n\n')
         if 'nextPageToken' not in lst:
             break
